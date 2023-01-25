@@ -3,7 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
-const session = require("express-session");
+const passport = require("passport");
+require("./passportGoogleSSO");
+const loginWithGoogleAPI = require("./routes/loginWithGoogle");
 
 mongoose.set("strictQuery", false);
 
@@ -17,13 +19,8 @@ app.use(cors());
 
 app.use(bodyparser.json());
 
-app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get("/", (req, res) => {
   res.send("Ad-Lib.io QA Tool");
@@ -32,6 +29,8 @@ app.get("/", (req, res) => {
 app.use("/users", require("./routes/user"));
 app.use("/users/signup", require("./routes/user"));
 app.use("/users/signin", require("./routes/user"));
+
+app.use(loginWithGoogleAPI);
 
 app.listen("9001", function () {
   console.log("Ad-Lib.io QA Tool Server is running");

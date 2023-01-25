@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User } = require("../models/User");
+const { User } = require("./../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -54,9 +54,6 @@ router.post("/signin", async (req, res) => {
     if (await bcrypt.compare(req.body.password, user.password)) {
       const token = jwt.sign({ email: req.body.email }, JWT_SECRET);
       if (res.status(200)) {
-        req.session.isAuth = true;
-        console.log(req.session);
-        console.log(req.session.id);
         return res.status(200).json({ success: true, user, token });
       } else {
         return res.status(400).json({ success: false, err });

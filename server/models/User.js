@@ -9,6 +9,15 @@ const UserSchema = new Schema({
   password: {
     type: String,
   },
+  fullName: {
+    type: String,
+  },
+  googleId: {
+    type: String,
+  },
+  picture: {
+    type: String,
+  },
 });
 
 module.exports = {
