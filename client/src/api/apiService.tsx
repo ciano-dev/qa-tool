@@ -3,7 +3,8 @@ import Axios from "axios";
 const token = localStorage.getItem("token");
 
 const apiService = Axios.create({
-  baseURL: "http://localhost:9001/users/",
+  baseURL: "http://localhost:5000/api/v1/",
+  withCredentials: true,
   headers: { Authorization: "Bearer " + token },
 });
 
@@ -19,7 +20,7 @@ apiService.interceptors.response.use(
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       if (window.location.pathname !== "/") {
-        window.location.href = "/";
+        // window.location.href = "/";
       }
     } else {
       return Promise.reject(error);

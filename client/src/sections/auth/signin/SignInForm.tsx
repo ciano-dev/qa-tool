@@ -12,10 +12,12 @@ import apiService from "../../../api/apiService";
 
 const SignInFormWrapper = styled(Layout)`
   background: transparent;
-  width: 50%;
-  height: auto;
-  margin: 25vh auto;
-  padding: 10px;
+`;
+
+const SignInFormItem = styled(Form.Item)`
+  &:last-child {
+    margin-bottom: 5px;
+  }
 `;
 
 const SignInFormInputIconMailOutlined = styled(MailOutlined)`
@@ -105,18 +107,32 @@ export default function SignInForm() {
     setShowPassword((show) => !show);
   };
 
-  const onFinish = async (values) => {
+  const fetchAuthUser = async () => {
+    const response = await apiService.get("/auth/user").catch((err) => {
+      console.log("Not properly authenticated");
+    });
+
+    console.log(response);
+
+    if (response && response.data) {
+      console.log("User: ", response.data);
+    }
+  };
+
+  const onFinish = async (values: any) => {
     try {
       const request = await apiService.post("/signin", values);
-      if (request.data.success)
+      if (request.data.success) {
+        fetchAuthUser();
         api["success"]({
           message: "Sign In Successfully",
           description: "You are successfully sign in!",
         });
-    } catch (error) {
+      }
+    } catch (error: any) {
       api["error"]({
         message: "Sign In Failed",
-        description: error.response.data.error,
+        description: "Wrong Credentials!",
       });
     }
   };
@@ -131,7 +147,7 @@ export default function SignInForm() {
         }}
         onFinish={onFinish}
       >
-        <Form.Item
+        <SignInFormItem
           name="email"
           rules={[
             {
@@ -148,8 +164,8 @@ export default function SignInForm() {
             prefix={<SignInFormInputIconMailOutlined />}
             placeholder="Email"
           />
-        </Form.Item>
-        <Form.Item
+        </SignInFormItem>
+        <SignInFormItem
           name="password"
           rules={[
             {
@@ -172,17 +188,17 @@ export default function SignInForm() {
               )
             }
           />
-        </Form.Item>
-        <Form.Item>
+        </SignInFormItem>
+        <SignInFormItem>
           <Form.Item name="remember" valuePropName="checked" noStyle>
             <SignInFormCheckbox>Remember me</SignInFormCheckbox>
           </Form.Item>
-        </Form.Item>
-        <Form.Item>
+        </SignInFormItem>
+        <SignInFormItem>
           <SignInFormButton type="primary" htmlType="submit">
             Sign In
           </SignInFormButton>
-        </Form.Item>
+        </SignInFormItem>
       </Form>
     </SignInFormWrapper>
   );
